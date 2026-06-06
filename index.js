@@ -28,6 +28,11 @@ app.post("/send", async (req, res) => {
     description,
   } = req.body;
 
+  console.log({
+    emailUser: process.env.EMAIL_USER,
+    hasPassword: !!process.env.EMAIL_PASS,
+  });
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
