@@ -34,14 +34,16 @@ app.post("/send", async (req, res) => {
   });
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    tls: {
-      rejectUnauthorized: false,
-    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000,
   });
 
   const mailOptions = {
@@ -228,6 +230,9 @@ app.post("/send", async (req, res) => {
   };
 
   try {
+    await transporter.verify();
+    console.log("SMTP READY");
+
     await transporter.sendMail(mailOptions);
 
     res.status(200).json({
