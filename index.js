@@ -20,8 +20,14 @@ app.use(cors({
 app.use(express.json());
 
 app.post("/send", async (req, res) => {
-  const { name, email, requirements, description } = req.body;
-  
+  const {
+    name,
+    email,
+    contact,
+    requirements,
+    description,
+  } = req.body;
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -29,29 +35,205 @@ app.post("/send", async (req, res) => {
       pass: process.env.EMAIL_PASS,
     },
     tls: {
-    rejectUnauthorized: false,
-  },
+      rejectUnauthorized: false,
+    },
   });
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_USER,
-    subject: `New Inquiry from ${name}`,
+    subject: `🚀 New Project Inquiry from ${name}`,
     html: `
-      <h2>Client Inquiry</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Requirements:</strong> ${requirements}</p>
-      <p><strong>Description:</strong> ${description}</p>
-    `,
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>New Inquiry</title>
+</head>
+
+<body style="
+  margin:0;
+  padding:0;
+  background:#f4f7fb;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="center" style="padding:40px 20px;">
+
+<table width="700" cellpadding="0" cellspacing="0" style="
+  max-width:700px;
+  background:#ffffff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,0.08);
+">
+
+  <!-- Header -->
+  <tr>
+    <td style="
+      background:linear-gradient(135deg,#2563eb,#3b82f6,#60a5fa);
+      padding:40px;
+      text-align:center;
+      color:white;
+    ">
+      <h1 style="
+        margin:0;
+        font-size:30px;
+        font-weight:700;
+      ">
+        New Project Inquiry
+      </h1>
+
+      <p style="
+        margin-top:12px;
+        font-size:15px;
+        opacity:.95;
+      ">
+        A new client has submitted the contact form.
+      </p>
+    </td>
+  </tr>
+
+  <!-- Content -->
+  <tr>
+    <td style="padding:40px;">
+
+      <div style="
+        background:#f8fafc;
+        border:1px solid #e5e7eb;
+        border-radius:16px;
+        padding:24px;
+      ">
+
+        <table width="100%" cellpadding="0" cellspacing="0">
+
+          <tr>
+            <td style="padding-bottom:16px;">
+              <strong style="color:#2563eb;">👤 Name</strong>
+              <p style="margin:6px 0 0;color:#111827;">
+                ${name}
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-bottom:16px;">
+              <strong style="color:#2563eb;">📧 Email</strong>
+              <p style="margin:6px 0 0;color:#111827;">
+                ${email}
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-bottom:16px;">
+              <strong style="color:#2563eb;">📱 Contact</strong>
+              <p style="margin:6px 0 0;color:#111827;">
+                ${contact || "Not provided"}
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-bottom:16px;">
+              <strong style="color:#2563eb;">🛠 Requirements</strong>
+              <p style="margin:6px 0 0;color:#111827;">
+                ${requirements}
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong style="color:#2563eb;">📝 Project Description</strong>
+
+              <div style="
+                margin-top:10px;
+                background:white;
+                border-left:4px solid #2563eb;
+                padding:16px;
+                border-radius:10px;
+                color:#374151;
+                line-height:1.7;
+              ">
+                ${description.replace(/\n/g, "<br>")}
+              </div>
+            </td>
+          </tr>
+
+        </table>
+
+      </div>
+
+      <!-- Divider -->
+      <div style="
+        margin:32px 0;
+        height:1px;
+        background:#e5e7eb;
+      "></div>
+
+      <!-- Meta -->
+      <table width="100%">
+        <tr>
+          <td style="
+            color:#6b7280;
+            font-size:13px;
+          ">
+            Submitted on:
+            <strong>${new Date().toLocaleString()}</strong>
+          </td>
+
+          <td align="right" style="
+            color:#6b7280;
+            font-size:13px;
+          ">
+            WeblureX Contact Form
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td style="
+      background:#0f172a;
+      color:#cbd5e1;
+      text-align:center;
+      padding:24px;
+      font-size:13px;
+    ">
+      © ${new Date().getFullYear()} WeblureX • New Lead Notification
+    </td>
+  </tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+`,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "Email sent successfully." });
+
+    res.status(200).json({
+      message: "Email sent successfully.",
+    });
   } catch (err) {
     console.error("Error sending email:", err);
-    res.status(500).json({ message: "Email sending failed." });
+
+    res.status(500).json({
+      message: "Email sending failed.",
+    });
   }
 });
 
