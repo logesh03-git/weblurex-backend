@@ -28,21 +28,16 @@ app.post("/send", async (req, res) => {
     description,
   } = req.body;
 
-  console.log({
-    emailUser: process.env.EMAIL_USER,
-    hasPassword: !!process.env.EMAIL_PASS,
-  });
-
   const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -229,7 +224,6 @@ app.post("/send", async (req, res) => {
 
   try {
     await transporter.verify();
-    console.log("SMTP READY");
 
     await transporter.sendMail(mailOptions);
 
